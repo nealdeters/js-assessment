@@ -6,7 +6,7 @@ if ( typeof window === 'undefined' ) {
 describe('best practices', function(){
   it('you should avoid global variables', function() {
     bestPracticesAnswers.globals();
-    expect(window.myObject).not.to.be.ok;
+    expect(global.myObject).not.to.be.ok;
   });
 
   it('you should use parseInt correctly', function() {
