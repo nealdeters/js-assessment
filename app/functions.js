@@ -16,13 +16,13 @@ exports.functionsAnswers = {
   },
 
   makeClosures: function(arr, fn) {
-    var ret = [];
+    let ret = [];
 
-    var makeFn = function(val) {
+    let makeFn = function(val) {
       return function() { return fn(val); };
     };
 
-    for (var i = 0, len = arr.length; i < len; i++) {
+    for (let i = 0, len = arr.length; i < len; i++) {
       ret.push(makeFn(arr[i]));
     }
 
@@ -36,9 +36,9 @@ exports.functionsAnswers = {
   },
 
   useArguments: function() {
-    var sum = 0;
+    let sum = 0;
 
-    for (var i = 0, len = arguments.length; i < len; i++) {
+    for (let i = 0, len = arguments.length; i < len; i++) {
       sum += arguments[i];
     }
 
@@ -46,19 +46,37 @@ exports.functionsAnswers = {
   },
 
   callIt: function(fn) {
-    var args = Array.prototype.slice.call(arguments, 1, arguments.length);
+    let args = Array.prototype.slice.call(arguments, 1, arguments.length);
     return fn.apply(null, args);
   },
 
   partialUsingArguments: function(fn) {
-    var args = Array.prototype.slice.call(arguments, 1, arguments.length);
+    let args = Array.prototype.slice.call(arguments, 1, arguments.length);
     return function() {
-      var moreArgs = args.concat(Array.prototype.slice.call(arguments));
+      let moreArgs = args.concat(Array.prototype.slice.call(arguments));
       return fn.apply(null, moreArgs);
     };
   },
 
   curryIt: function(fn) {
+    function applyArguments(_fn, args) {
+      return _fn.apply(null, args);
+    }
 
+    function getArgumentAccumulator(accumulatedArguments, expectedArgumentsCount) {
+      return function (currentArgument) {
+        accumulatedArguments.push(currentArgument);
+
+        var allArgumentsProvided = accumulatedArguments.length === expectedArgumentsCount;
+
+        if (allArgumentsProvided) {
+          return applyArguments(fn, accumulatedArguments);
+        }
+
+        return getArgumentAccumulator(accumulatedArguments, expectedArgumentsCount);
+      };
+    }
+
+    return getArgumentAccumulator([], fn.length);
   }
 };
